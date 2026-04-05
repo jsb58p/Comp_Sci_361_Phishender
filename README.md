@@ -25,9 +25,9 @@ Build and evaluate a working LLM-powered phishing detection tool that achieves c
 | Name | Role |
 |------|------|
 | Kevin Zhang | Project Lead |
-| Risk/Threat Analyst | 
-| Technical Implementation Lead |
-| Documentation/Presentation Lead |
+| Jacob Biddinger | Risk/Threat Analyst | 
+|  | Technical Implementation Lead |
+|  | Documentation/Presentation Lead |
 
 ## Assets
 
