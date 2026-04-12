@@ -7,6 +7,10 @@
 
 Phishender is an LLM-powered phishing detection and explanation tool targeting end users and organizations that need a fast way to evaluate suspicious emails and URLs. Unlike traditional spam filters that block threats silently, Phishender returns a structured verdict alongside a plain-language explanation of detected phishing indicators — improving both detection and security literacy simultaneously.
 
+## Architecture
+
+![Architecture Diagram](https://github.com/jsb58p/Comp_Sci_361_Phishender/blob/main/docs/architecture.png)
+
 ## Features
 
 - Accept raw email text or URL as input via web interface
