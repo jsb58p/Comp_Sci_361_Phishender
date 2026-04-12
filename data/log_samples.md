@@ -1,3 +1,7 @@
+**Prompts given to Claude Sonnet 4.6**
+---
+
+
 ```
 Analyze this email for phishing indicators. Return a VERDICT of PHISHING or LEGITIMATE, a CONFIDENCE of HIGH, MEDIUM, or LOW, and an EXPLANATION of your reasoning:
 
