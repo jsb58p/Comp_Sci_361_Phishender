@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phishender</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #222;
+      padding: 40px 20px;
+    }
+
+    h1 { font-size: 28px; margin-bottom: 4px; }
+
+    .subtitle { color: #666; font-size: 14px; margin-bottom: 30px; }
+
+    .container { max-width: 700px; margin: 0 auto; }
+
+    .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+
+    .tab {
+      padding: 8px 18px;
+      border: 1px solid #ccc;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .tab.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+
+    textarea {
+      width: 100%;
+      height: 220px;
+      padding: 12px;
+      font-size: 13px;
+      font-family: monospace;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      background: white;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: white;
+    }
+
+    .btn-row { display: flex; gap: 10px; margin-top: 12px; }
+
+    button.primary {
+      padding: 10px 24px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    button.secondary {
+      padding: 10px 18px;
+      background: white;
+      color: #444;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #result { margin-top: 30px; display: none; }
+
+    .verdict-box {
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .verdict-box.phishing  { background: #fdecea; border: 1px solid #f5c6c2; }
+    .verdict-box.suspicious { background: #fff8e1; border: 1px solid #ffe082; }
+    .verdict-box.legitimate { background: #e6f4ea; border: 1px solid #a8d5b5; }
+    .verdict-box.error      { background: #f1f3f4; border: 1px solid #dadce0; }
+
+    .verdict-icon { font-size: 32px; }
+
+    .verdict-label { font-size: 20px; font-weight: bold; }
+    .verdict-box.phishing  .verdict-label { color: #c62828; }
+    .verdict-box.suspicious .verdict-label { color: #e65100; }
+    .verdict-box.legitimate .verdict-label { color: #2e7d32; }
+
+    .verdict-sub { font-size: 13px; color: #555; margin-top: 2px; }
+
+    .confidence { margin-bottom: 16px; }
+    .confidence label { font-size: 13px; color: #555; display: block; margin-bottom: 6px; }
+
+    .bar-bg { background: #e0e0e0; border-radius: 99px; height: 8px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+
+    .section-label { font-size: 13px; font-weight: bold; color: #444; margin-bottom: 8px; margin-top: 16px; }
+
+    .indicators { list-style: none; padding: 0; }
+    .indicators li {
+      padding: 8px 12px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .explanation {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .injection-warning {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #7c5500;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    #loading { display: none; text-align: center; padding: 30px; color: #666; font-size: 14px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1> Phishender</h1>
+  <p class="subtitle">AI-powered phishing detection — paste an email or URL to analyze it.</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('email')">Email</button>
+    <button class="tab" onclick="switchTab('url')">URL</button>
+  </div>
+
+  <div id="email-wrap">
+    <textarea id="email-input" placeholder="Paste the full email here (headers, subject, body)..."></textarea>
+  </div>
+
+  <div id="url-wrap" style="display:none;">
+    <input type="text" id="url-input" placeholder="https://suspicious-link.com/verify"/>
+  </div>
+
+  <div class="btn-row">
+    <button class="primary" id="analyze-btn" onclick="runAnalysis()">Analyze</button>
+    <button class="secondary" onclick="loadExample()">Load Example</button>
+  </div>
+
+  <div id="loading"> Analyzing...</div>
+
+  <div id="result">
+    <div class="verdict-box" id="verdict-box">
+      <div class="verdict-icon" id="verdict-icon"></div>
+      <div>
+        <div class="verdict-label" id="verdict-label"></div>
+        <div class="verdict-sub" id="verdict-sub"></div>
+      </div>
+    </div>
+
+    <div class="confidence">
+      <label id="confidence-label">Confidence: 0%</label>
+      <div class="bar-bg">
+        <div class="bar-fill" id="bar-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="injection-warning" id="injection-warning">
+      ⚠️ Possible prompt injection detected in this input. Results may be less reliable.
+    </div>
+
+    <div class="section-label">Indicators Found</div>
+    <ul class="indicators" id="indicators"></ul>
+
+    <div class="section-label">Explanation</div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+
+</div>
+<script>
+  const API = "http://localhost:8000";
+  let currentTab = "email";
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll(".tab").forEach((t, i) => {
+      t.classList.toggle("active", (i === 0 && tab === "email") || (i === 1 && tab === "url"));
+    });
+    document.getElementById("email-wrap").style.display = tab === "email" ? "block" : "none";
+    document.getElementById("url-wrap").style.display   = tab === "url"   ? "block" : "none";
+  }
+
+  function loadExample() {
+    switchTab("email");
+    document.getElementById("email-input").value =
+`From: security-alert@paypa1-verify.com
+To: user@example.com
+Subject: URGENT: Your PayPal account has been limited
+
+Dear PayPal Customer,
+
+We detected unusual activity on your account. Your access has been temporarily limited.
+
+Verify your identity immediately:
+http://paypal-secure-verify.xyz/login?token=abc123
+
+You have 24 hours or your account will be permanently suspended.
+
+PayPal Security Team`;
+  }
+
+  async function runAnalysis() {
+    const content = currentTab === "email"
+      ? document.getElementById("email-input").value.trim()
+      : document.getElementById("url-input").value.trim();
+
+    if (!content) { alert("Please enter an email or URL."); return; }
+
+    document.getElementById("result").style.display = "none";
+    document.getElementById("loading").style.display = "block";
+    document.getElementById("analyze-btn").disabled = true;
+
+    try {
+      const res = await fetch(`${API}/analyze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content, input_type: currentTab })
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.detail || "Server error");
+      }
+
+      showResult(await res.json());
+
+    } catch (e) {
+      showResult({
+        verdict: "error", confidence: 0, indicators: [],
+        explanation: `Error: ${e.message}. Is the backend running on port 8000?`,
+        injection_attempt: false
+      });
+    } finally {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("analyze-btn").disabled = false;
+    }
+  }
+
+  function showResult(data) {
+    const verdict     = data.verdict || "error";
+    const confidence  = data.confidence ?? 0;
+    const indicators  = data.indicators || [];
+    const explanation = data.explanation || "";
+
+    const icons  = { phishing: "", suspicious: "", legitimate: "", error: "" };
+    const subs   = {
+      phishing:   "This is likely a phishing attempt.",
+      suspicious: "Some red flags detected — be cautious.",
+      legitimate: "No phishing indicators found.",
+      error:      "Analysis could not be completed."
+    };
+    const colors = { phishing: "#e53935", suspicious: "#fb8c00", legitimate: "#43a047", error: "#9e9e9e" };
+
+    document.getElementById("verdict-box").className = `verdict-box ${verdict}`;
+    document.getElementById("verdict-icon").textContent  = icons[verdict];
+    document.getElementById("verdict-label").textContent = verdict.toUpperCase();
+    document.getElementById("verdict-sub").textContent   = subs[verdict];
+
+    document.getElementById("confidence-label").textContent = `Confidence: ${confidence}%`;
+    const fill = document.getElementById("bar-fill");
+    fill.style.width = "0%";
+    fill.style.background = colors[verdict];
+    setTimeout(() => fill.style.width = `${confidence}%`, 50);
+
+    document.getElementById("injection-warning").style.display = data.injection_attempt ? "block" : "none";
+
+    const list = document.getElementById("indicators");
+    list.innerHTML = indicators.length
+      ? indicators.map(i => `<li>${i}</li>`).join("")
+      : "<li style='color:#888'>No specific indicators identified.</li>";
+
+    document.getElementById("explanation").textContent = explanation;
+    document.getElementById("result").style.display = "block";
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("url-input").addEventListener("keydown", e => {
+      if (e.key === "Enter") runAnalysis();
+    });
+  });
+</script>
+</body>
+</html>
