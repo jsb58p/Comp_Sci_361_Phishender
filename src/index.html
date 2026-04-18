@@ -18,6 +18,11 @@
     .subtitle { color: #666; font-size: 14px; margin-bottom: 30px; }
     .container { max-width: 700px; margin: 0 auto; }
 
+    .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .tab { padding: 8px 18px; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; font-size: 14px; }
+    .tab.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+    input[type="text"] { width: 100%; padding: 12px; font-size: 14px; border: 1px solid #ccc; border-radius: 6px; background: white; }
+
     textarea {
       width: 100%;
       height: 220px;
@@ -128,9 +133,20 @@
 <div class="container">
 
   <h1>Phishender</h1>
-  <p class="subtitle">AI-powered phishing detection — paste an email to analyze it.</p>
+  <p class="subtitle">AI-powered phishing detection — paste an email or URL to analyze it.</p>
 
-  <textarea id="email-input" placeholder="Paste the full email here (headers, subject, body)..."></textarea>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('email')">📧 Email</button>
+    <button class="tab" onclick="switchTab('url')">🔗 URL</button>
+  </div>
+
+  <div id="email-wrap">
+    <textarea id="email-input" placeholder="Paste the full email here (headers, subject, body)..."></textarea>
+  </div>
+
+  <div id="url-wrap" style="display:none;">
+    <input type="text" id="url-input" placeholder="https://suspicious-link.com/verify"/>
+  </div>
 
   <div class="btn-row">
     <button class="primary" id="analyze-btn" onclick="runAnalysis()">Analyze</button>
@@ -173,10 +189,23 @@
 
 <script>
   const API = "http://localhost:8000";
+  let currentTab = "email";
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll(".tab").forEach((t, i) => {
+      t.classList.toggle("active", (i === 0 && tab === "email") || (i === 1 && tab === "url"));
+    });
+    document.getElementById("email-wrap").style.display = tab === "email" ? "block" : "none";
+    document.getElementById("url-wrap").style.display   = tab === "url"   ? "block" : "none";
+  }
 
   function loadExample() {
-    document.getElementById("email-input").value =
-`From: security-alert@paypa1-verify.com
+    if (currentTab === "url") {
+      document.getElementById("url-input").value = "http://paypal-secure-verify.xyz/login?token=abc123";
+    } else {
+      document.getElementById("email-input").value =
+              `From: security-alert@paypa1-verify.com
 To: user@example.com
 Subject: URGENT: Your PayPal account has been limited
 
@@ -190,16 +219,20 @@ http://paypal-secure-verify.xyz/login?token=abc123
 You have 24 hours or your account will be permanently suspended.
 
 PayPal Security Team`;
+    }
   }
 
   function clearAll() {
     document.getElementById("email-input").value = "";
+    document.getElementById("url-input").value = "";
     document.getElementById("result").style.display = "none";
   }
 
   async function runAnalysis() {
-    const content = document.getElementById("email-input").value.trim();
-    if (!content) { alert("Please paste an email first."); return; }
+    const content = currentTab === "email"
+      ? document.getElementById("email-input").value.trim()
+      : document.getElementById("url-input").value.trim();
+    if (!content) { alert("Please paste an email or URL first."); return; }
 
     document.getElementById("result").style.display = "none";
     document.getElementById("loading").style.display = "block";
@@ -209,7 +242,7 @@ PayPal Security Team`;
       const res = await fetch(`${API}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content, input_type: "email" })
+        body: JSON.stringify({ content, input_type: currentTab })
       });
 
       if (!res.ok) {
