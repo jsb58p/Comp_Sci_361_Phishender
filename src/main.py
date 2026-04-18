@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from pipeline import analyze_protected
+from audit_log import log_decision
 
 app = FastAPI(title="Phishender API")
 
@@ -34,6 +35,8 @@ async def analyze(input: EmailInput):
     result["verdict"] = result["verdict"].lower()
     if result["verdict"] == "uncertain":
         result["verdict"] = "suspicious"
+
+    log_decision(input.input_type, input.content, result)
 
     return result
 

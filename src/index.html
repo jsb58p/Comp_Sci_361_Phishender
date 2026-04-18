@@ -109,6 +109,17 @@
       color: #333;
     }
 
+    .tips { list-style: none; padding: 0; }
+    .tips li {
+      padding: 8px 12px;
+      background: #e8f4fd;
+      border: 1px solid #bee3f8;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #1a365d;
+    }
+
     .injection-warning {
       background: #fff8e1;
       border: 1px solid #ffe082;
@@ -136,8 +147,8 @@
   <p class="subtitle">AI-powered phishing detection — paste an email or URL to analyze it.</p>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('email')">📧 Email</button>
-    <button class="tab" onclick="switchTab('url')">🔗 URL</button>
+    <button class="tab active" onclick="switchTab('email')">Email</button>
+    <button class="tab" onclick="switchTab('url')">URL</button>
   </div>
 
   <div id="email-wrap">
@@ -183,6 +194,9 @@
 
     <div class="section-label">Explanation</div>
     <div class="explanation" id="explanation"></div>
+
+    <div class="section-label">What To Watch For Next Time</div>
+    <ul class="tips" id="tips"></ul>
 
   </div>
 </div>
@@ -307,6 +321,14 @@ PayPal Security Team`;
       : "<li style='color:#888'>No specific indicators identified.</li>";
 
     document.getElementById("explanation").textContent = explanation;
+
+    // Tips
+    const tips = data.tips || [];
+    const tipsList = document.getElementById("tips");
+    tipsList.innerHTML = tips.length
+      ? tips.map(t => `<li>${t}</li>`).join("")
+      : "<li style='color:#888'>No specific tips available.</li>";
+
     document.getElementById("result").style.display = "block";
   }
 

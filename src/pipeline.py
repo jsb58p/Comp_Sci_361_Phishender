@@ -37,6 +37,7 @@ def analyze_protected(email_text: str) -> dict:
         "confidence": validated.confidence,
         "indicators": validated.indicators,
         "explanation": validated.explanation,
+        "tips": validated.tips,
         "injection_detected": filter_result.injection_detected,
         "matched_patterns": filter_result.matched_patterns,
     }

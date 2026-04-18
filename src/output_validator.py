@@ -12,7 +12,7 @@ import json
 from dataclasses import dataclass
 
 VALID_VERDICTS = {"PHISHING", "LEGITIMATE", "UNCERTAIN"}
-REQUIRED_KEYS = {"verdict", "confidence", "indicators", "explanation"}
+REQUIRED_KEYS = {"verdict", "confidence", "indicators", "explanation", "tips"}
 
 
 class ValidationError(Exception):
@@ -25,6 +25,7 @@ class ValidatedResponse:
     confidence: int
     indicators: list[str]
     explanation: str
+    tips: list[str]
 
 
 def validate_response(raw: str) -> ValidatedResponse:
@@ -64,4 +65,5 @@ def validate_response(raw: str) -> ValidatedResponse:
         confidence=data["confidence"],
         indicators=data["indicators"],
         explanation=data["explanation"],
+        tips=data.get("tips", []),
     )
