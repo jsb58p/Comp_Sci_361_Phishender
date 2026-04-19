@@ -208,6 +208,28 @@ Rules you must follow without exception:
 | Recall | 100.00% |
 | F1 Score | 90.91% |
 
+## 8. Least-Privilege Matrix
+
+Each component is restricted to only the minimum access required to perform its function.
+
+| Component | Reads User Input | Calls LLM API | Writes to Disk | Reads API Key | Network Access | Accessible To |
+|-----------|-----------------|--------------|----------------|---------------|----------------|---------------|
+| `injection_filter.py` | ✅ | ❌ | ❌ | ❌ | ❌ | `pipeline.py` only |
+| `secure_prompt_template.py` | ✅ | ❌ | ❌ | ❌ | ❌ | `pipeline.py` only |
+| `api_client.py` | ✅ | ✅ | ❌ | ✅ | ✅ | `pipeline.py` only |
+| `output_validator.py` | ✅ | ❌ | ❌ | ❌ | ❌ | `pipeline.py` only |
+| `pipeline.py` | ✅ | ❌ | ❌ | ❌ | ❌ | `main.py` only |
+| `audit_log.py` | ✅ (100 chars only) | ❌ | ✅ (append only) | ❌ | ❌ | `main.py` only |
+| `main.py` | ✅ | ❌ | ❌ | ❌ | ❌ | FastAPI router only |
+| `index.html` | ❌ | ❌ | ❌ | ❌ | ✅ (localhost only) | User browser only |
+
+**Key observations:**
+- Only `api_client.py` has access to the API key and external network
+- `audit_log.py` receives only a 100-character preview of user input, never the full email
+- `index.html` never has access to the API key, all LLM calls are server-side only
+- `audit_log.py` writes in append-only mode, no component can delete or modify existing log entries
+- Each pipeline component is only accessible to the component directly above it in the chain
+
 **Note:** Dataset consists of SMS messages rather than full emails due to Python 3.14 compatibility issues with the HuggingFace datasets library. The evaluation methodology is identical to what would be used with an email-specific dataset. Evaluation against a larger email-specific dataset is needed for future checkpoints.
 
 **Retrieval Hardening** Phishender does not implement a retrieval or RAG pipline. All analysis is performed directly on user-submitted input. Retrieval hardening is not applicable to this system.
