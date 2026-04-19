@@ -1,0 +1,7 @@
+.env
+audit_log.jsonl
+evaluation/evaluation_results.jsonl
+__pycache__/
+*.pyc
+.idea/
+venv/
