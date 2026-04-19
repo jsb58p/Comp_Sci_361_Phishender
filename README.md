@@ -17,6 +17,7 @@ Phishender is an LLM-powered phishing detection and explanation tool targeting e
 - Analyze input through an LLM pipeline with a structured prompt
 - Return a verdict with confidence rationale
 - Generate a plain-language explanation of detected phishing indicators
+- Provide security tips to users for future attacks
 - Evaluate detection accuracy using a labeled phishing dataset
 - Document techniques defending against prompt injection via email content
 
@@ -29,9 +30,9 @@ Build and evaluate a working LLM-powered phishing detection tool that achieves c
 | Name | Role |
 |------|------|
 | Kevin Zhang | Project Lead |
-| Jacob Biddinger | Risk/Threat Analyst | 
-|  | Technical Implementation Lead |
-|  | Documentation/Presentation Lead |
+| Jayanth Kumar Mallireddy | Risk/Threat Analyst | 
+| Jacob Biddinger | Technical Implementation Lead |
+| Antionio Lacio | Documentation/Presentation Lead |
 
 ## Assets
 
@@ -57,9 +58,31 @@ Build and evaluate a working LLM-powered phishing detection tool that achieves c
 ## Repository Structure
 
 ```
-phishender/
-├── README.md
-├── src/
+Phishender/
 ├── data/
-└── docs/
+│   └── log_samples.md
+├── docs/
+│   ├── architecture.png
+│   ├── asset_inventory.md
+│   ├── baseline_condition.md
+│   ├── control_list.md
+│   ├── risk_matrix.md
+│   ├── risk_register.md
+│   ├── threat_model.md
+│   └── prompt_injection_defense.md
+└── src/                  
+    ├── main.py
+    ├── index.html
+    ├── pipeline.py
+    ├── api_client.py
+    ├── injection_filter.py
+    ├── output_validator.py
+    ├── secure_prompt_template.py
+    ├── audit_log.py     
+    ├── requirements.txt
+    ├── test_pipeline.py
+    └── evaluation/
+        ├── evaluate.py
+        ├── email.csv
+        └── evaluation_results.jsonl
 ```
