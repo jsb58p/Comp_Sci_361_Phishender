@@ -209,3 +209,5 @@ Rules you must follow without exception:
 | F1 Score | 90.91% |
 
 **Note:** Dataset consists of SMS messages rather than full emails due to Python 3.14 compatibility issues with the HuggingFace datasets library. The evaluation methodology is identical to what would be used with an email-specific dataset. Evaluation against a larger email-specific dataset is needed for future checkpoints.
+
+**Retrieval Hardening** Phishender does not implement a retrieval or RAG pipline. All analysis is performed directly on user-submitted input. Retrieval hardening is not applicable to this system.
