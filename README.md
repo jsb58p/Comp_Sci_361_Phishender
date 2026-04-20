@@ -34,16 +34,168 @@ Build and evaluate a working LLM-powered phishing detection tool that achieves c
 | Jacob Biddinger | Technical Implementation Lead |
 | Antionio Lacio | Documentation/Presentation Lead |
 
-## Assets
+# Phishender — Setup & Running Guide
 
-| Asset | Description | Priority |
-|-------|-------------|----------|
-| Email Submission Input | Raw email text and headers for analysis | Critical |
-| LLM Analysis Engine | Claude/GPT API pipeline performing phishing classification | Critical |
-| API Credentials | Anthropic/OpenAI keys and app authentication tokens | Critical |
-| Explanation Output | Plain-language reasoning returned to the user | High |
-| Phishing Dataset | Labeled for testing and evaluation | High |
-| Audit / Decision Logs | Record of inputs, verdicts, and explanations | Medium |
+## Prerequisites
+
+- Python 3.11+
+- An Anthropic API key from [console.anthropic.com](https://console.anthropic.com)
+- A web browser (Firefox or Chrome)
+
+---
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/jsb58p/Comp_Sci_361_Phishender.git
+cd Comp_Sci_361_Phishender
+```
+
+---
+
+## 2. Install Dependencies
+
+Navigate into the `src/` folder and install requirements:
+
+```bash
+cd src
+pip install -r requirements.txt
+```
+
+---
+
+## 3. Set Up Your API Key
+
+Edit `.env` file inside the `src/` folder:
+
+```bash
+ANTHROPIC_API_KEY=?
+```
+
+Replace ? with your actual key from **console.anthropic.com → API Keys**.
+
+Important:
+- No spaces around the `=` sign
+- Never commit this file to GitHub — it is already excluded via `.gitignore`
+
+---
+
+## 4. Start the Backend
+
+Make sure you are inside the `src/` folder, then run:
+
+```bash
+uvicorn main:app --reload
+```
+
+You should see:
+
+```
+INFO: Uvicorn running on http://127.0.0.1:8000
+```
+
+Leave this terminal open while using the app.
+
+---
+
+## 5. Open the Frontend
+
+Open your browser and go to:
+
+```
+http://localhost:8000
+```
+
+The frontend loads automatically, do not open `index.html` directly as a file
+
+---
+
+## 6. Using the App
+
+- Click **Email** tab and paste a full email, or click **URL** tab and paste a suspicious link
+- Click **Analyze** to run the analysis
+- Click **Load Example** to pre-fill a sample phishing email for demo purposes
+- Click **Copy Results** to copy the full analysis to clipboard
+
+---
+
+## 7. Run the Injection Defense Test (Optional)
+
+To verify the prompt injection defenses work, run from inside `src/`:
+
+```bash
+python test_pipeline.py
+```
+
+This runs 4 test cases through both the unprotected and protected pipeline and prints a before/after comparison table showing the defenses in action.
+
+---
+
+## 8. Run the Evaluation (Optional)
+
+To evaluate classification accuracy against the labeled dataset:
+
+Navigate into the evaluation folder:
+```bash
+cd src/evaluation
+python evaluate.py
+```
+
+Results print to the terminal and are saved to `evaluation_results.jsonl`.
+
+---
+
+## Stopping the Server
+
+Go back to the terminal running uvicorn and press **Ctrl+C**.
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Backend won't start | Make sure you are running uvicorn from inside `src/`, not the project root |
+| API key error | Check `.env` is inside `src/` and has no spaces around the `=` sign |
+| Frontend shows network error | Make sure backend is running first, then go to `http://localhost:8000` |
+| `ModuleNotFoundError` | Run `pip install -r requirements.txt` from inside `src/` |
+| `evaluate.py` crashes on import | Python 3.14 has library compatibility issues — the main app still works fine |
+| Port 8000 already in use | Another process is using the port — restart your terminal and try again |
+
+---
+
+## Project Structure
+
+```
+Comp_Sci_361_Phishender/
+├── README.md
+├── .gitignore
+├── data/
+│   └── log_samples.md
+├── docs/
+│   ├── architecture.png
+│   ├── asset_inventory.md
+│   ├── baseline_condition.md
+│   ├── control_list.md
+│   ├── risk_matrix.md
+│   ├── risk_register.md
+│   └── threat_model.md
+└── src/
+    ├── .env                  ← create this yourself, never commit
+    ├── main.py               ← FastAPI backend
+    ├── index.html            ← frontend
+    ├── pipeline.py           ← connects all pipeline steps
+    ├── api_client.py         ← calls Claude API
+    ├── injection_filter.py   ← prompt injection defense
+    ├── output_validator.py   ← validates Claude response
+    ├── secure_prompt_template.py  ← hardened system prompt
+    ├── audit_log.py          ← logs each analysis
+    ├── requirements.txt
+    ├── test_pipeline.py      ← injection defense test suite
+    └── evaluation/
+        ├── evaluate.py       ← accuracy evaluation script
+        └── email.csv         ← labeled dataset (not committed)
+```
 
 ## Threat Assumptions
 
