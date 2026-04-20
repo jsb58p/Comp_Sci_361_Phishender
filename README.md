@@ -164,39 +164,6 @@ Go back to the terminal running uvicorn and press **Ctrl+C**.
 
 ---
 
-## Project Structure
-
-```
-Comp_Sci_361_Phishender/
-├── README.md
-├── .gitignore
-├── data/
-│   └── log_samples.md
-├── docs/
-│   ├── architecture.png
-│   ├── asset_inventory.md
-│   ├── baseline_condition.md
-│   ├── control_list.md
-│   ├── risk_matrix.md
-│   ├── risk_register.md
-│   └── threat_model.md
-└── src/
-    ├── .env                  ← create this yourself, never commit
-    ├── main.py               ← FastAPI backend
-    ├── index.html            ← frontend
-    ├── pipeline.py           ← connects all pipeline steps
-    ├── api_client.py         ← calls Claude API
-    ├── injection_filter.py   ← prompt injection defense
-    ├── output_validator.py   ← validates Claude response
-    ├── secure_prompt_template.py  ← hardened system prompt
-    ├── audit_log.py          ← logs each analysis
-    ├── requirements.txt
-    ├── test_pipeline.py      ← injection defense test suite
-    └── evaluation/
-        ├── evaluate.py       ← accuracy evaluation script
-        └── email.csv         ← labeled dataset (not committed)
-```
-
 ## Threat Assumptions
 
 | Threat Category | Type | Potential Impact |
