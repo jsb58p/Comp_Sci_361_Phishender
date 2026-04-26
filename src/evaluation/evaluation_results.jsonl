@@ -12,10 +12,10 @@
 {"index": 12, "expected": "LEGITIMATE", "got": "LEGITIMATE", "correct": true, "injection_detected": false}
 {"index": 13, "expected": "LEGITIMATE", "got": "PHISHING", "correct": false, "injection_detected": false}
 {"index": 14, "expected": "LEGITIMATE", "got": "LEGITIMATE", "correct": true, "injection_detected": false}
-{"index": 15, "expected": "LEGITIMATE", "got": "PHISHING", "correct": false, "injection_detected": false}
-{"index": 16, "expected": "LEGITIMATE", "got": "PHISHING", "correct": false, "injection_detected": false}
+{"index": 15, "expected": "LEGITIMATE", "got": "LEGITIMATE", "correct": true, "injection_detected": false}
+{"index": 16, "expected": "LEGITIMATE", "got": "LEGITIMATE", "correct": true, "injection_detected": false}
 {"index": 17, "expected": "LEGITIMATE", "got": "LEGITIMATE", "correct": true, "injection_detected": false}
 {"index": 18, "expected": "LEGITIMATE", "got": "LEGITIMATE", "correct": true, "injection_detected": false}
 {"index": 19, "expected": "LEGITIMATE", "got": "LEGITIMATE", "correct": true, "injection_detected": false}
 {"index": 20, "expected": "LEGITIMATE", "got": "PHISHING", "correct": false, "injection_detected": false}
-{"summary": {"total": 20, "tp": 10, "tn": 6, "fp": 4, "fn": 0, "accuracy": 0.8, "precision": 0.7143, "recall": 1.0, "f1": 0.8333}}
+{"summary": {"total": 20, "tp": 10, "tn": 8, "fp": 2, "fn": 0, "accuracy": 0.9, "precision": 0.8333, "recall": 1.0, "f1": 0.9091}}
