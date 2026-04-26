@@ -1,6 +1,5 @@
 # Phishender — Evidence Appendix
 
-**Course:** AI for Cyber Defense — Spring 2026
 **Team:** Kevin Zhang, Jayanth Kumar Mallireddy, Jacob Biddinger, Antonio Lacio
 
 ---
